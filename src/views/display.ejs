@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 40px auto;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        th,
+        td {
+            padding: 12px 16px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        tr:hover {
+            background-color: #e6f7ff;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin: 0 4px;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (let i=0; i < dataTable.length; i++) { %>
+                <tr>
+                    <td>
+                        <%= dataTable[i].email %>
+                    </td>
+                    <td>
+                        <%= dataTable[i].firstName %>
+                    </td>
+                    <td>
+                        <%= dataTable[i].lastName %>
+                    </td>
+                    <td>
+                        <%= dataTable[i].address %>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" href="/edit-crud/<%= dataTable[i].id %>">Edit</a>
+                        <a class="btn btn-danger" href="/delete-crud/<%= dataTable[i].id %>"
+                            onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                    </td>
+                </tr>
+                <% } %>
+        </tbody>
+    </table>
+</body>
+
+</html>
