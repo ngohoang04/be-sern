@@ -1,12 +1,12 @@
 'use strict';
-import dotenv from 'dotenv';
-dotenv.config();
+
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
+
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = require(path.join(__dirname, '..', 'config', 'config.json'))[env];
 const db = {};
 
 let sequelize;
@@ -22,8 +22,24 @@ fs
     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
   })
   .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
+    const modelPath = path.join(__dirname, file);
+    try {
+      const modelFactory = require(modelPath);
+      // support commonjs factory or transpiled ESM default
+      const factory = (typeof modelFactory === 'function') ? modelFactory
+        : (modelFactory && typeof modelFactory.default === 'function') ? modelFactory.default
+          : null;
+
+      if (!factory) {
+        console.warn(`Skipping ${file}: not a model factory`);
+        return;
+      }
+
+      const model = factory(sequelize, Sequelize.DataTypes);
+      if (model && model.name) db[model.name] = model;
+    } catch (err) {
+      console.error(`Error loading model file ${file}:`, err);
+    }
   });
 
 Object.keys(db).forEach(modelName => {
